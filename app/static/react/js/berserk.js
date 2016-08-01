@@ -1,4 +1,4 @@
-/*
+	/*
 	BERSERK :: A Load Generator
 	---------------------------
 	A simple load generator with a web based interface written in
@@ -209,25 +209,27 @@ var RealtimeTargetDetails = React.createClass({
 
 var TargetDetails = React.createClass({
 	render: function() {
-			return (
-				<div className="col-md-12">
-					<p>{ this.props.targetName }</p>
-	    			<ul className="nav nav-pills" id='currentAttackResults'>
-	            		{ this.props.target }
-	    			</ul>
-				</div>
-			)
-
+		var iconName = "fa fa-tachometer";
+		return (
+			<div className="col-md-12">
+				<p><i className={ this.props.targetName ? iconName : null }> <span className='targetName'>{ this.props.targetName }</span></i></p>
+    			<div>
+            		{ this.props.target }
+            	</div>
+			</div>
+		)
 	}
 });
 
 var TargetBadge = React.createClass({
 	render: function() {
-		var color = 'label label-'+this.props.color;
+		var color = 'fa fa-' + this.props.color + ' fa-2x';
 		return ( 
-			<li>
-                <h3><span className={ color }>{ this.props.responseCode }</span><span className="badge">{ this.props.count }</span></h3>
-            </li>
+            <a className="quick-btn" href="#">
+                <i className={ color }></i><br/>
+                <span>{ this.props.responseCode }</span>
+                <span className="label label-success">{ this.props.count }</span>
+            </a>
 		);
 	}
 });
@@ -249,11 +251,20 @@ var Main = React.createClass({
 				var targetResponses = [];
 				$.each(data, function(index, response) {
 				console.log('INDEX: '+index+'  RESPONSE: '+response);
+				var icon = 'genderless';
+				switch( index ) {
+					case '200': icon = 'thumbs-o-up'; break;
+					case '302': icon = 'hand-o-right'; break;
+					case '403': icon = 'hand-paper-o'; break;
+					case '404': icon = 'thumbs-o-down'; break;
+					case '500': icon = 'hand-spock-o'; break;
+					case '503': icon = 'hand-lizard-o'; break;
+				}
 				targetResponses.push(
 							<TargetBadge key={index} 
-										 color={ 'success' }
+										 color={ icon }
 										 responseCode={index}
-										 count={response} />
+										 count={ response } />
 							);
 				});
 				that.setState({ selectedTarget: targetResponses, target: URL });
